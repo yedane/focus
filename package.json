@@ -3,13 +3,8 @@
     "displayName": "Focus",
     "description": "Help you focus the code.Highlight the lines/code block/indent you are editing.",
     "version": "0.2.0",
-    "publisher": "QuanLi",
-    "author": {
-        "email": "lee@leezw.net",
-        "name": "Quan Li",
-        "url": "https://leezw.net"
-    },
-    "icon":"images/logo.png",
+    "publisher": "yedane",
+    "icon": "images/logo.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.35.0"
@@ -17,6 +12,9 @@
     "categories": [
         "Programming Languages",
         "Other"
+    ],
+    "extensionKind": [
+        "ui"
     ],
     "activationEvents": [
         "*"
@@ -28,18 +26,14 @@
         "c/c++",
         "multi-root ready"
     ],
-    "bugs": {
-        "url":"https://github.com/mzzw/focus/issues",
-        "email": "lee@leezw.net"
-    },
-    "homepage": "https://github.com/mzzw/focus/blob/master/README.md",
+    "homepage": "https://github.com/yedane/focus/blob/master/README.md",
     "repository": {
         "type": "git",
-        "url": "https://github.com/mzzw/focus.git"
+        "url": "https://github.com/yedane/focus.git"
     },
     "main": "./extension.js",
     "contributes": {
-        "commands":[
+        "commands": [
             {
                 "command": "focus.swtichToLineLevel",
                 "title": "Focus: Switch To Line Level"
@@ -65,25 +59,25 @@
                 "title": "Focus: Toggle Level"
             }
         ],
-        "keybindings":[
+        "keybindings": [
             {
                 "command": "focus.toggleLevel",
                 "key": "ctrl+alt+u"
             }
         ],
-        "configuration":[
+        "configuration": [
             {
                 "title": "Focus configuration",
                 "properties": {
-                    "focus.opacity":{
-                        "type":"string",
-                        "default":"0.7",
+                    "focus.opacity": {
+                        "type": "string",
+                        "default": "1",
                         "pattern": "^0\\.\\d{1}$",
                         "description": "Opacity of the out of focus lines"
                     },
-                    "focus.highlightRange":{
-                        "type":"string",
-                        "default":"fixed",
+                    "focus.highlightRange": {
+                        "type": "string",
+                        "default": "fixed",
                         "enum": [
                             "line",
                             "block",
@@ -100,10 +94,16 @@
                             "Not highlight any code"
                         ]
                     },
-                    "focus.highlightLines":{
-                        "type":"integer",
-                        "default":5,
-                        "markdownDescription":"This configuration only useful when `#focus.highlightRange#` set to *fixed* .this mean how many lines will be highlight."
+                    "focus.highlightLines": {
+                        "type": "integer",
+                        "default": 5,
+                        "markdownDescription": "This configuration only useful when `#focus.highlightRange#` set to *fixed* .this mean how many lines will be highlight."
+                    },
+                    "focus.backgroundColor": {
+                        "type": "string",
+                        "markdownEnumDescriptions": [
+                            "Setting to color background"
+                        ]
                     }
                 }
             }

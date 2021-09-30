@@ -3,6 +3,7 @@ const vscode = require('vscode');
 
 const CONF_OPACITY = "focus.opacity";
 const CONF_HIGHLIGHT_RANGE = "focus.highlightRange";
+const CONF_BACKGROUND_COLOR = "focus.backgroundColor"
 const CONF_HIGHLIGHT_RANGE_LINE = "line";
 const CONF_HIGHLIGHT_RANGE_BLOCK = "block";
 const CONF_HIGHLIGHT_RANGE_INDENT = "indent";
@@ -20,7 +21,9 @@ const CMD_TOGGLE = "focus.toggleLevel";
 function activate(context) {
 
     let baseDecoration = vscode.window.createTextEditorDecorationType({
-        opacity: vscode.workspace.getConfiguration().get(CONF_OPACITY)
+        opacity: vscode.workspace.getConfiguration().get(CONF_OPACITY),
+        backgroundColor : vscode.workspace.getConfiguration().get(CONF_BACKGROUND_COLOR),
+        isWholeLine: true,
     });
 
     vscode.window.onDidChangeTextEditorSelection(event => {
@@ -32,13 +35,17 @@ function activate(context) {
     });
 
     vscode.workspace.onDidChangeConfiguration(listener => {
-        if (listener.affectsConfiguration(CONF_OPACITY)) {
+        if (listener.affectsConfiguration(CONF_OPACITY)
+            || listener.affectsConfiguration(CONF_BACKGROUND_COLOR)) {
             baseDecoration.dispose();
             baseDecoration = vscode.window.createTextEditorDecorationType({
-                opacity: vscode.workspace.getConfiguration().get(CONF_OPACITY)
+                opacity: vscode.workspace.getConfiguration().get(CONF_OPACITY),
+                backgroundColor : vscode.workspace.getConfiguration().get(CONF_BACKGROUND_COLOR),
+                isWholeLine: true
             });
         }
         if((listener.affectsConfiguration(CONF_OPACITY)
+            || listener.affectsConfiguration(CONF_BACKGROUND_COLOR)
             || listener.affectsConfiguration(CONF_HIGHLIGHT_LINES)
             || listener.affectsConfiguration(CONF_HIGHLIGHT_RANGE))
             && vscode.window.activeTextEditor){
@@ -132,26 +139,30 @@ function activate(context) {
 
         function rollDecoration(p, r) {
             for (let i = 0; i < selections.length; i++) {
-                if (i == 0) {
-                    range.push(new vscode.Range(
-                        new vscode.Position(0, 0),
-                        p(r(selections[i].start, ROLL_ABOVE), 0)));
-                } else {
-                    firstPosition = r(selections[i - 1].end, ROLL_BELOW);
-                    nextPosition = r(selections[i].start, ROLL_ABOVE);
-                    if (nextPosition.isAfter(firstPosition)) {
-                        range.push(new vscode.Range(
-                            p(firstPosition, 1),
-                            p(nextPosition, 0)
-                        ));
-                    }
-                }
-                if (i == selections.length - 1) {
-                    range.push(new vscode.Range(
-                        p(r(selections[i].end, ROLL_BELOW), 1),
-                        new vscode.Position(activeEditor.document.lineCount, 1)
-                    ));
-                }
+                // if (i == 0) {
+                //     range.push(new vscode.Range(
+                //         new vscode.Position(0, 0),
+                //         p(r(selections[i].start, ROLL_ABOVE), 0)));
+                // } else {
+                //     firstPosition = r(selections[i - 1].end, ROLL_BELOW);
+                //     nextPosition = r(selections[i].start, ROLL_ABOVE);
+                //     if (nextPosition.isAfter(firstPosition)) {
+                //         range.push(new vscode.Range(
+                //             p(firstPosition, 1),
+                //             p(nextPosition, 0)
+                //         ));
+                //     }
+                // }
+                // if (i == selections.length - 1) {
+                //     range.push(new vscode.Range(
+                //         p(r(selections[i].end, ROLL_BELOW), 1),
+                //         new vscode.Position(activeEditor.document.lineCount, 1)
+                //     ));
+                // }
+                range.push(new vscode.Range(
+                          p(r(selections[i].start, ROLL_ABOVE), 0),
+                          p(r(selections[i].end, ROLL_BELOW), 1)
+                ));
             }
         };
 
